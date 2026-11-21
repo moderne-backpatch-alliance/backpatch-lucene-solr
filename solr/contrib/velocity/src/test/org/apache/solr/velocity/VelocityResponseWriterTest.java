@@ -24,12 +24,14 @@ import org.apache.solr.response.SolrParamResourceLoader;
 import org.apache.solr.response.SolrQueryResponse;
 import org.apache.solr.response.VelocityResponseWriter;
 import org.apache.solr.request.SolrQueryRequest;
+import org.apache.velocity.exception.MethodInvocationException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.security.AccessControlException;
 
 public class VelocityResponseWriterTest extends SolrTestCaseJ4 {
   @BeforeClass
@@ -50,6 +52,46 @@ public class VelocityResponseWriterTest extends SolrTestCaseJ4 {
   public void testVelocityResponseWriterRegistered() {
     QueryResponseWriter writer = h.getCore().getQueryResponseWriter("velocity");
     assertTrue("VrW registered check", writer instanceof VelocityResponseWriter);
+  }
+
+  @Test
+  public void testTemplateSandbox() throws Exception {
+    assumeTrue("This test only works with security manager", System.getSecurityManager() != null);
+    VelocityResponseWriter vrw = new VelocityResponseWriter();
+    NamedList<String> nl = new NamedList<>();
+    nl.add("template.base.dir", getFile("velocity").getAbsolutePath());
+    vrw.init(nl);
+    SolrQueryRequest req = req(VelocityResponseWriter.TEMPLATE,"outside_the_box");
+    SolrQueryResponse rsp = new SolrQueryResponse();
+    StringWriter buf = new StringWriter();
+    try {
+      vrw.write(buf, req, rsp);
+      fail("template broke outside the box, retrieved OS: " + buf);
+    } catch (MethodInvocationException e) {
+      assertNotNull(e.getCause());
+      assertEquals(AccessControlException.class, e.getCause().getClass());
+      // expected failure, can't get outside the box
+    }
+  }
+
+  @Test
+  public void testSandboxIntersection() throws Exception {
+    assumeTrue("This test only works with security manager", System.getSecurityManager() != null);
+    VelocityResponseWriter vrw = new VelocityResponseWriter();
+    NamedList<String> nl = new NamedList<>();
+    nl.add("template.base.dir", getFile("velocity").getAbsolutePath());
+    vrw.init(nl);
+    SolrQueryRequest req = req(VelocityResponseWriter.TEMPLATE,"sandbox_intersection");
+    SolrQueryResponse rsp = new SolrQueryResponse();
+    StringWriter buf = new StringWriter();
+    try {
+      vrw.write(buf, req, rsp);
+      fail("template broke outside the box, retrieved OS: " + buf);
+    } catch (MethodInvocationException e) {
+      assertNotNull(e.getCause());
+      assertEquals(AccessControlException.class, e.getCause().getClass());
+      // expected failure, can't get outside the box
+    }
   }
 
   @Test
