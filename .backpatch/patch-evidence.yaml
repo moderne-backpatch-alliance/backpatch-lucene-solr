@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 8.1.1.1-backpatch-00001
+release: 8.1.1.1-backpatch-00002
 baseline: v8.1.1+backpatch.baseline
 fixes:
   - cve: CVE-2019-0193
@@ -11,12 +11,20 @@ fixes:
     artifacts:
       - org.apache.solr:solr-dataimporthandler
       - org.apache.solr:solr-core
-    note: New in this release; ported onto 8.1.1; fixed at 8.1.1.1-backpatch-00001 (backpatch-lucene-solr@2c6f4c4).
+    note: Carried from 8.1.1.1-backpatch-00001; ported onto 8.1.1; fixed at 8.1.1.1-backpatch-00001 (backpatch-lucene-solr@2c6f4c4).
+  - cve: CVE-2019-17558
+    upstream_fix_url: https://github.com/advisories/GHSA-ww97-9w65-2crx
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2019-17558
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-lucene-solr/compare/910f757~1...04e0bb3
+    basis: adapted
+    artifacts:
+      - org.apache.solr:solr-velocity
+    note: New in this release; ported onto 8.1.1; fixed at 8.1.1.1-backpatch-00002 (backpatch-lucene-solr@910f757..04e0bb3).
 tests:
-  commit: 2c6f4c42168dfbd579fa041ce8aafc78b9a9847a
-  command: ant test in solr/contrib/dataimporthandler (Ant 1.9.16, Ivy 2.4.0, -Dtests.haltonfailure=false); the report decides
+  commit: 04e0bb350649628c1c99feffd1788afaa6bc75e4
+  command: solr-ant.sh (Ant 1.9.16, Ivy 2.4.0, -Dtests.haltonfailure=false) ant test in solr/contrib/dataimporthandler and solr/contrib/velocity; solr/core -Dtests.class for TestConfigSetsAPI*, TestConfigsApi, TestConfig, TestConfigWithLibDisabled, ResourceLoaderTest, TestConfigSets, TestConfigSetImmutable, TestConfigSetProperties, TestSolrConfigHandler, SolrCoreTest, TestConfigOverlay, TestCoreDiscovery, TestLazyCores; solr/solrj TestZkConfigManager; the report decides
   runtime: openjdk version 1.8.0_382, Gradle wrapper
-  report: solr-dataimporthandler-8.1.1.1-backpatch-00001-tests.zip
-  report_sha256: 20d197323f6750c5caeebdd69c12e52c20a5b128b049c02588c593acca683d81
+  report: solr-velocity-8.1.1.1-backpatch-00002-tests.zip
+  report_sha256: 055cff273acc3402ce90518a0f8bfcd60f8bc945afa8af948b12be9cd103023d
   result: pass
-  note: 177 tests at the patch commit, 4 of them skipped by the suite, 0 failed, 0 errors.
+  note: 275 tests at the patch commit, 6 of them skipped by the suite, 0 failed, 0 errors.
