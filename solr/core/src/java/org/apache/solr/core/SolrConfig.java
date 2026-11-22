@@ -785,13 +785,32 @@ public class SolrConfig extends XmlConfigFile implements MapSerializable {
         "Multiple plugins configured for type: " + type);
   }
 
+  public static final String LIB_ENABLED_SYSPROP = "solr.config.lib.enabled";
+
   private void initLibs() {
+    boolean libDirectiveAllowed = Boolean.getBoolean(LIB_ENABLED_SYSPROP);
     NodeList nodes = (NodeList) evaluate("lib", XPathConstants.NODESET);
     if (nodes == null || nodes.getLength() == 0) return;
 
     log.debug("Adding specified lib dirs to ClassLoader");
     SolrResourceLoader loader = getResourceLoader();
     List<URL> urls = new ArrayList<>();
+
+    if (!libDirectiveAllowed) {
+      log.warn("Configset references one or more <lib/> directives, but <lib/> usage is disabled on this Solr node.  Either remove all <lib/> tags from the relevant configset, or enable use of this feature by setting '{}=true'",
+          LIB_ENABLED_SYSPROP);
+    } else {
+      urls.addAll(processLibDirectives(nodes, loader));
+    }
+
+    if (urls.size() > 0) {
+      loader.addToClassLoader(urls);
+      loader.reloadLuceneSPI();
+    }
+  }
+
+  private List<URL> processLibDirectives(NodeList nodes, SolrResourceLoader loader) {
+    final List<URL> urls = new ArrayList<>();
 
     for (int i = 0; i < nodes.getLength(); i++) {
       Node node = nodes.item(i);
@@ -821,10 +840,7 @@ public class SolrConfig extends XmlConfigFile implements MapSerializable {
       }
     }
 
-    if (urls.size() > 0) {
-      loader.addToClassLoader(urls);
-      loader.reloadLuceneSPI();
-    }
+    return urls;
   }
 
   public int getMultipartUploadLimitKB() {

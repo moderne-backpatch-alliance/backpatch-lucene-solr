@@ -88,6 +88,7 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.noggit.JSONParser;
 import org.slf4j.Logger;
@@ -96,6 +97,7 @@ import org.slf4j.LoggerFactory;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.solr.common.params.CommonParams.NAME;
 import static org.apache.solr.core.ConfigSetProperties.DEFAULT_FILENAME;
+import static org.apache.solr.core.SolrConfig.LIB_ENABLED_SYSPROP;
 import static org.junit.matchers.JUnitMatchers.containsString;
 
 /**
@@ -105,6 +107,11 @@ public class TestConfigSetsAPI extends SolrTestCaseJ4 {
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private MiniSolrCloudCluster solrCluster;
+
+  @BeforeClass
+  public static void setUpClass() throws Exception {
+    System.setProperty(LIB_ENABLED_SYSPROP, "true");
+  }
 
   @Override
   @Before
