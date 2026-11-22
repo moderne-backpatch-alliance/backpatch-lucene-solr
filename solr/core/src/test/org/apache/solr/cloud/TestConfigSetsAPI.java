@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -376,6 +377,13 @@ public class TestConfigSetsAPI extends SolrTestCaseJ4 {
 
   }
 
+  @Test
+  public void testUploadWithForbiddenContent() throws Exception {
+    // Uploads a config set containing a script, a class file and jar file, will return 400 error
+    long res = uploadForbiddenConfigSet("forbidden", "suffix", null, null);
+    assertEquals(400, res);
+  }
+
   protected SolrZkClient zkClient() {
     ZkStateReader reader = solrCluster.getSolrClient().getZkStateReader();
     if (reader == null)
@@ -456,6 +464,45 @@ public class TestConfigSetsAPI extends SolrTestCaseJ4 {
     return statusCode;
   }
   
+  private long uploadForbiddenConfigSet(String configSetName, String suffix, String username,
+                                        String password) throws IOException {
+    ByteBuffer zippedConfig = TestDynamicLoading
+        .getFileContent(createTempZipFileWithForbiddenContent("magic"), false);
+    Map map = postDataAndGetResponse(solrCluster.getSolrClient(),
+        solrCluster.getJettySolrRunners().get(0).getBaseUrl().toString() + "/admin/configs?action=UPLOAD&name="+configSetName+suffix,
+        zippedConfig, username, password);
+    assertNotNull(map);
+    return (long) getObjectByPath(map, false, Arrays.asList("responseHeader", "status"));
+  }
+
+  /** Create a zip file (in the temp directory) containing files with forbidden content */
+  private String createTempZipFileWithForbiddenContent(String resourcePath) {
+    try {
+      final File zipFile = createTempFile("configset", "zip").toFile();
+      final File directory = SolrTestCaseJ4.getFile(resourcePath);
+      log.info("Directory: {}", directory.getAbsolutePath());
+      zipWithForbiddenContent(directory, zipFile);
+      log.info("Zipfile: {}", zipFile.getAbsolutePath());
+      return zipFile.getAbsolutePath();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static void zipWithForbiddenContent(File directory, File zipfile)
+      throws IOException {
+    OutputStream out = Files.newOutputStream(zipfile.toPath());
+    assertTrue(directory.isDirectory());
+    try (ZipOutputStream zout = new ZipOutputStream(out)) {
+      // Copy in all files from the directory
+      for (File file : Objects.requireNonNull(directory.listFiles())) {
+        zout.putNextEntry(new ZipEntry(file.getName()));
+        zout.write(Files.readAllBytes(file.toPath()));
+        zout.closeEntry();
+      }
+    }
+  }
+
   /**
    * Create a zip file (in the temp directory) containing all the files within the specified directory
    * and return the path for the zip file.
