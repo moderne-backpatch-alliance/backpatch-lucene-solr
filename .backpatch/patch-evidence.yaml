@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 8.1.1.1-backpatch-00004
+release: 8.1.1.1-backpatch-00005
 baseline: v8.1.1+backpatch.baseline
 fixes:
   - cve: CVE-2019-0193
@@ -36,12 +36,20 @@ fixes:
     basis: adapted
     artifacts:
       - org.apache.solr:solr-core
-    note: New in this release; ported onto 8.1.1; fixed at 8.1.1.1-backpatch-00004 (backpatch-lucene-solr@ff1082f).
+    note: Carried from 8.1.1.1-backpatch-00004; ported onto 8.1.1; fixed at 8.1.1.1-backpatch-00004 (backpatch-lucene-solr@ff1082f).
+  - cve: CVE-2023-50291
+    upstream_fix_url: https://github.com/apache/lucene-solr/commit/43739e2fb726038d55f6fd21d81307188b62adc6
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2023-50291
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-lucene-solr/commit/5380980
+    basis: adapted
+    artifacts:
+      - org.apache.solr:solr-core
+    note: New in this release; ported onto 8.1.1; fixed at 8.1.1.1-backpatch-00005 (backpatch-lucene-solr@5380980).
 tests:
-  commit: ff1082fc951a0e89fff1e014f25114eeb6b90829
+  commit: 53809801aa18f550087ca7c5e06dc3adc5a02d74
   command: solr-ant.sh (Ant 1.9.16, Ivy 2.4.0, -Dtests.haltonfailure=false) ant test in solr/contrib/dataimporthandler and solr/contrib/velocity; solr/core -Dtests.class for TestConfigSetsAPI*, TestConfigsApi, TestConfig, TestConfigWithLibDisabled, ResourceLoaderTest, TestConfigSets, TestConfigSetImmutable, TestConfigSetProperties, TestSolrConfigHandler, SolrCoreTest, TestConfigOverlay, TestCoreDiscovery, TestLazyCores; solr/solrj TestZkConfigManager; the report decides
   runtime: openjdk version 1.8.0_382, Gradle wrapper
-  report: solr-core-8.1.1.1-backpatch-00004-tests.zip
-  report_sha256: 5cb14b898ea1d4efc7facb883e09b4fc522435495923de15cecc61b41eb19f3d
+  report: solr-core-8.1.1.1-backpatch-00005-tests.zip
+  report_sha256: cd579e1f2660c1e339e376e50a70bcad13ceb90fe04ba511b98771eae5c68aa4
   result: pass
   note: 277 tests at the patch commit, 6 of them skipped by the suite, 0 failed, 0 errors.
