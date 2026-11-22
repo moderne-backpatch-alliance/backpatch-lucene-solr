@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 8.1.1.1-backpatch-00002
+release: 8.1.1.1-backpatch-00003
 baseline: v8.1.1+backpatch.baseline
 fixes:
   - cve: CVE-2019-0193
@@ -19,12 +19,21 @@ fixes:
     basis: adapted
     artifacts:
       - org.apache.solr:solr-velocity
-    note: New in this release; ported onto 8.1.1; fixed at 8.1.1.1-backpatch-00002 (backpatch-lucene-solr@910f757..04e0bb3).
+    note: Carried from 8.1.1.1-backpatch-00002; ported onto 8.1.1; fixed at 8.1.1.1-backpatch-00002 (backpatch-lucene-solr@910f757..04e0bb3).
+  - cve: CVE-2020-13957
+    upstream_fix_url: https://github.com/apache/lucene-solr/commit/e001c2221812a0ba9e9378855040ce72f93eced4
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2020-13957
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-lucene-solr/commit/5b4628a
+    basis: adapted
+    artifacts:
+      - org.apache.solr:solr-core
+      - org.apache.solr:solr-solrj
+    note: New in this release; ported onto 8.1.1; fixed at 8.1.1.1-backpatch-00003 (backpatch-lucene-solr@5b4628a).
 tests:
-  commit: 04e0bb350649628c1c99feffd1788afaa6bc75e4
+  commit: 5b4628a30fcd90c552f78a082bdc08c00600ee96
   command: solr-ant.sh (Ant 1.9.16, Ivy 2.4.0, -Dtests.haltonfailure=false) ant test in solr/contrib/dataimporthandler and solr/contrib/velocity; solr/core -Dtests.class for TestConfigSetsAPI*, TestConfigsApi, TestConfig, TestConfigWithLibDisabled, ResourceLoaderTest, TestConfigSets, TestConfigSetImmutable, TestConfigSetProperties, TestSolrConfigHandler, SolrCoreTest, TestConfigOverlay, TestCoreDiscovery, TestLazyCores; solr/solrj TestZkConfigManager; the report decides
   runtime: openjdk version 1.8.0_382, Gradle wrapper
-  report: solr-velocity-8.1.1.1-backpatch-00002-tests.zip
-  report_sha256: 055cff273acc3402ce90518a0f8bfcd60f8bc945afa8af948b12be9cd103023d
+  report: solr-core-8.1.1.1-backpatch-00003-tests.zip
+  report_sha256: 778e2cc02831f46c51750fb7ad146c237f86004f5854a0566295fd266a5a9306
   result: pass
-  note: 275 tests at the patch commit, 6 of them skipped by the suite, 0 failed, 0 errors.
+  note: 276 tests at the patch commit, 6 of them skipped by the suite, 0 failed, 0 errors.
