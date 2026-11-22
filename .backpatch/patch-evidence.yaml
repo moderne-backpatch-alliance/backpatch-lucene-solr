@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 8.2.0.1-backpatch-00003
+release: 8.2.0.1-backpatch-00004
 baseline: v8.2.0+backpatch.baseline
 fixes:
   - cve: CVE-2019-17558
@@ -27,12 +27,20 @@ fixes:
     basis: adapted
     artifacts:
       - org.apache.solr:solr-core
-    note: New in this release; ported onto 8.2.0; fixed at 8.2.0.1-backpatch-00003 (backpatch-lucene-solr@bfab2ac).
+    note: Carried from 8.2.0.1-backpatch-00003; ported onto 8.2.0; fixed at 8.2.0.1-backpatch-00003 (backpatch-lucene-solr@bfab2ac).
+  - cve: CVE-2023-50386
+    upstream_fix_url: https://github.com/advisories/GHSA-37vr-vmg4-jwpw
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2023-50386
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-lucene-solr/compare/761132d~1...b8981e3
+    basis: adapted
+    artifacts:
+      - org.apache.solr:solr-core
+    note: New in this release; ported onto 8.2.0; fixed at 8.2.0.1-backpatch-00004 (backpatch-lucene-solr@761132d..b8981e3).
 tests:
-  commit: bfab2ac5ab8102e4f5acbcb62fd888b05edb8ef7
+  commit: b8981e34d72a244157a445d692ce675124c08066
   command: solr-ant.sh (Ant 1.9.16, Ivy 2.4.0, -Dtests.haltonfailure=false) ant test in solr/contrib/velocity; solr/core -Dtests.class for the ZK ACL and ZK client tests (OutOfBox/Overridden/VMParams ZkACLAndCredentialsProvidersTest, SaslZkACLProviderTest, SolrXmlInZkTest, TestZkChroot, ZkCLITest, ZkControllerTest, ZkSolrClientTest, TestZkAclsWithHadoopAuth); solr/solrj SolrZkClientTest, TestZkConfigManager; the report decides; solr/core config and configset classes for 24814 (TestConfigSetsAPI*, TestConfigsApi, TestConfig, TestConfigWithLibDisabled, ResourceLoaderTest, TestConfigSets, TestConfigSetImmutable, TestConfigSetProperties, TestSolrConfigHandler, SolrCoreTest, TestConfigOverlay, TestCoreDiscovery, TestLazyCores, FileTypeMagicUtilTest for 50386)
   runtime: openjdk version 1.8.0_382, Gradle wrapper
-  report: solr-core-8.2.0.1-backpatch-00003-tests.zip
-  report_sha256: 637d086e13255a3f8107a46219cd298ab2015e3e8cf9c23beadc99fb07de9b5e
+  report: solr-core-8.2.0.1-backpatch-00004-tests.zip
+  report_sha256: 88c223e42c9f2a2ad2a5c3f60bcd3af3e02945acc8eea2a9d57e103f2c390045
   result: pass
-  note: 153 tests at the patch commit, 3 of them skipped by the suite, 0 failed, 0 errors.
+  note: 156 tests at the patch commit, 3 of them skipped by the suite, 0 failed, 0 errors.
