@@ -113,6 +113,7 @@ import org.slf4j.LoggerFactory;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.solr.common.params.CommonParams.NAME;
 import static org.apache.solr.core.ConfigSetProperties.DEFAULT_FILENAME;
+import static org.apache.solr.core.SolrConfig.LIB_ENABLED_SYSPROP;
 import static org.junit.matchers.JUnitMatchers.containsString;
 
 /**
@@ -126,6 +127,7 @@ public class TestConfigSetsAPI extends SolrCloudTestCase {
 
   @BeforeClass
   public static void setUpClass() throws Exception {
+    System.setProperty(LIB_ENABLED_SYSPROP, "true");
     configureCluster(1)
             .withSecurityJson(getSecurityJson())
             .configure();
