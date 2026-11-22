@@ -1,6 +1,6 @@
 schema: osera-patch-evidence/0.1.0
 producer: moderne
-release: 8.2.0.1-backpatch-00001
+release: 8.2.0.1-backpatch-00002
 baseline: v8.2.0+backpatch.baseline
 fixes:
   - cve: CVE-2019-17558
@@ -10,12 +10,21 @@ fixes:
     basis: adapted
     artifacts:
       - org.apache.solr:solr-velocity
-    note: New in this release; ported onto 8.2.0; fixed at 8.2.0.1-backpatch-00001 (backpatch-lucene-solr@2285fd0..3ffe6a6).
+    note: Carried from 8.2.0.1-backpatch-00001; ported onto 8.2.0; fixed at 8.2.0.1-backpatch-00001 (backpatch-lucene-solr@2285fd0..3ffe6a6).
+  - cve: CVE-2021-29262
+    upstream_fix_url: https://github.com/advisories/GHSA-jgcr-fg3g-qvw8
+    advisory_url: https://nvd.nist.gov/vuln/detail/CVE-2021-29262
+    patch_commit_url: https://github.com/moderne-backpatch-alliance/backpatch-lucene-solr/commit/429b939
+    basis: adapted
+    artifacts:
+      - org.apache.solr:solr-core
+      - org.apache.solr:solr-solrj
+    note: New in this release; ported onto 8.2.0; fixed at 8.2.0.1-backpatch-00002 (backpatch-lucene-solr@429b939).
 tests:
-  commit: 3ffe6a6ee1fef46e3d97ae2a7ffbdb44c55f0fb1
-  command: ant test in solr/contrib/velocity (Ant 1.9.16, Ivy 2.4.0, -Dtests.haltonfailure=false); the report decides
+  commit: 429b9392a1b87484f2ed3e0cd3c81324d528c385
+  command: solr-ant.sh (Ant 1.9.16, Ivy 2.4.0, -Dtests.haltonfailure=false) ant test in solr/contrib/velocity; solr/core -Dtests.class for the ZK ACL and ZK client tests (OutOfBox/Overridden/VMParams ZkACLAndCredentialsProvidersTest, SaslZkACLProviderTest, SolrXmlInZkTest, TestZkChroot, ZkCLITest, ZkControllerTest, ZkSolrClientTest, TestZkAclsWithHadoopAuth); solr/solrj SolrZkClientTest, TestZkConfigManager; the report decides; solr/core config and configset classes for 24814 (TestConfigSetsAPI*, TestConfigsApi, TestConfig, TestConfigWithLibDisabled, ResourceLoaderTest, TestConfigSets, TestConfigSetImmutable, TestConfigSetProperties, TestSolrConfigHandler, SolrCoreTest, TestConfigOverlay, TestCoreDiscovery, TestLazyCores, FileTypeMagicUtilTest for 50386)
   runtime: openjdk version 1.8.0_382, Gradle wrapper
-  report: solr-velocity-8.2.0.1-backpatch-00001-tests.zip
-  report_sha256: 1c73cc2b6c17f17f705bb0aa17f6212cb20d8e1f60daf180228c9fa43a9ec89c
+  report: solr-core-8.2.0.1-backpatch-00002-tests.zip
+  report_sha256: 66997dfb77a06aca5fe4ba3091df8ede30d864af164c9155bf186591d41e2a31
   result: pass
-  note: 15 tests at the patch commit, 2 of them skipped by the suite, 0 failed, 0 errors.
+  note: 152 tests at the patch commit, 3 of them skipped by the suite, 0 failed, 0 errors.
